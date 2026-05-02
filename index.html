@@ -3,191 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArcRelay | Second-Hand Web3 Marketplace</title>
+    <title>ArcRelay | Working Web3 Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.3s ease; }
         .btn-primary { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); transition: all 0.2s; }
-        .btn-primary:active { transform: scale(0.96); }
-        .card-shadow { box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.06); }
-        .item-card:hover { transform: translateY(-5px); transition: transform 0.3s ease; }
+        .btn-primary:active { transform: scale(0.95); }
+        .hidden-item { display: none; }
+        .active-filter { background: #4f46e5 !important; color: white !important; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4); }
     </style>
 </head>
-<body class="bg-[#f8fafc] text-[#1e293b] antialiased">
+<body class="bg-[#f8fafc] text-[#1e293b]">
 
-    <!-- Header -->
-    <nav class="glass-nav sticky top-0 z-[100] border-b border-slate-200">
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-[100] border-b border-slate-200">
         <div class="container mx-auto px-5 h-20 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
                 </div>
-                <span class="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">ArcRelay</span>
+                <span class="text-xl font-extrabold text-indigo-600">ArcRelay</span>
             </div>
-            <button class="btn-primary text-white px-6 py-2.5 rounded-2xl font-bold text-sm shadow-xl shadow-indigo-100">
+            <button id="walletBtn" onclick="connectWallet()" class="btn-primary text-white px-6 py-2.5 rounded-2xl font-bold text-sm shadow-lg shadow-indigo-100">
                 Connect Wallet
             </button>
         </div>
     </nav>
 
-    <main class="container mx-auto px-5 py-12">
+    <main class="container mx-auto px-5 py-10">
         
-        <!-- Marketplace Header -->
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-            <div>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">Explore Market</h2>
-                <p class="text-slate-500 mt-2">Browse 10 premium pre-owned items available for USDC</p>
-            </div>
-            <div class="flex flex-wrap gap-2">
-                <span class="px-5 py-2 bg-indigo-600 text-white rounded-full text-xs font-bold shadow-lg shadow-indigo-100 cursor-pointer">All Items</span>
-                <span class="px-5 py-2 bg-white border border-slate-200 rounded-full text-xs font-bold text-slate-600 cursor-pointer hover:bg-slate-50">Electronics</span>
-                <span class="px-5 py-2 bg-white border border-slate-200 rounded-full text-xs font-bold text-slate-600 cursor-pointer hover:bg-slate-50">Furniture</span>
+        <!-- Form Section -->
+        <section class="max-w-2xl mx-auto mb-20 bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
+            <h2 class="text-2xl font-bold mb-6">List Your Item</h2>
+            <form id="listingForm" class="space-y-4">
+                <input type="text" id="itemName" placeholder="Item Name" class="w-full bg-slate-50 p-4 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" required>
+                <textarea id="itemDesc" placeholder="Description" class="w-full bg-slate-50 p-4 rounded-xl h-24 outline-none focus:ring-2 focus:ring-indigo-500" required></textarea>
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="number" id="itemPrice" placeholder="Price (USDC)" class="bg-slate-50 p-4 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" required>
+                    <select id="itemCat" class="bg-slate-50 p-4 rounded-xl outline-none">
+                        <option value="electronics">Electronics</option>
+                        <option value="furniture">Furniture</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full btn-primary text-white py-4 rounded-xl font-bold uppercase tracking-widest shadow-xl shadow-indigo-100">
+                    Post Listing
+                </button>
+            </form>
+        </section>
+
+        <!-- Filters -->
+        <div class="flex justify-between items-center mb-10">
+            <h2 class="text-3xl font-black">Marketplace</h2>
+            <div class="flex gap-2" id="filterGroup">
+                <button onclick="filterItems('all')" class="filter-btn active-filter px-6 py-2 rounded-full border border-slate-200 text-xs font-bold transition-all">All Items</button>
+                <button onclick="filterItems('electronics')" class="filter-btn bg-white px-6 py-2 rounded-full border border-slate-200 text-xs font-bold transition-all">Electronics</button>
+                <button onclick="filterItems('furniture')" class="filter-btn bg-white px-6 py-2 rounded-full border border-slate-200 text-xs font-bold transition-all">Furniture</button>
             </div>
         </div>
 
-        <!-- 10 ITEM GRID -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            
-            <!-- Item 1 -->
-            <div class="item-card bg-white rounded-[2rem] p-4 card-shadow border border-slate-100">
-                <img src="https://images.unsplash.com/photo-1605462863863-10d9e47e15ee?auto=format&fit=crop&w=400&q=80" alt="Vintage Camera" class="w-full aspect-square object-cover rounded-[1.5rem] mb-5">
-                <div class="px-2">
-                    <h3 class="font-bold text-lg mb-1">Vintage Film Camera</h3>
-                    <p class="text-slate-400 text-xs mb-4 line-clamp-1">Collector's item, 1970s model, working condition.</p>
-                    <div class="flex items-center justify-between pt-4 border-t border-slate-50">
-                        <p class="text-xl font-black text-slate-900">120 <span class="text-xs font-medium text-slate-400 uppercase">USDC</span></p>
-                        <button class="bg-slate-900 text-white px-5 py-2 rounded-xl font-bold text-sm hover:bg-indigo-600">Buy</button>
-                    </div>
+        <!-- Grid of 10 Items -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="itemsGrid">
+            <!-- 10 Mock Items with different categories -->
+            <div class="item-card bg-white p-4 rounded-[2rem] border border-slate-100 electronics">
+                <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300" class="rounded-2xl mb-4 aspect-square object-cover">
+                <h3 class="font-bold">iPhone 12</h3>
+                <p class="text-xs text-slate-400 mb-4">Old but gold. 64GB.</p>
+                <div class="flex justify-between items-center">
+                    <span class="font-black text-lg">300 USDC</span>
+                    <button class="bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-bold">Buy</button>
                 </div>
             </div>
-
-            <!-- Item 2 -->
-            <div class="item-card bg-white rounded-[2rem] p-4 card-shadow border border-slate-100">
-                <img src="https://images.unsplash.com/photo-1542491509-1c01e1feaf22?auto=format&fit=crop&w=400&q=80" alt="Watch" class="w-full aspect-square object-cover rounded-[1.5rem] mb-5">
-                <div class="px-2">
-                    <h3 class="font-bold text-lg mb-1">Luxury Men's Watch</h3>
-                    <p class="text-slate-400 text-xs mb-4 line-clamp-1">Minor scratches on strap, authentic glass.</p>
-                    <div class="flex items-center justify-between pt-4 border-t border-slate-50">
-                        <p class="text-xl font-black text-slate-900">45 <span class="text-xs font-medium text-slate-400 uppercase">USDC</span></p>
-                        <button class="bg-slate-900 text-white px-5 py-2 rounded-xl font-bold text-sm hover:bg-indigo-600">Buy</button>
-                    </div>
+            <!-- Repeat for other items (9 more) -->
+            <div class="item-card bg-white p-4 rounded-[2rem] border border-slate-100 furniture">
+                <img src="https://images.unsplash.com/photo-1592078615290-033ee584e267?w=300" class="rounded-2xl mb-4 aspect-square object-cover">
+                <h3 class="font-bold">Wooden Chair</h3>
+                <p class="text-xs text-slate-400 mb-4">Oak wood, very sturdy.</p>
+                <div class="flex justify-between items-center">
+                    <span class="font-black text-lg">50 USDC</span>
+                    <button class="bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-bold">Buy</button>
                 </div>
             </div>
-
-            <!-- Item 3 -->
-            <div class="item-card bg-white rounded-[2rem] p-4 card-shadow border border-slate-100">
-                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=400&q=80" alt="Headphones" class="w-full aspect-square object-cover rounded-[1.5rem] mb-5">
-                <div class="px-2">
-                    <h3 class="font-bold text-lg mb-1">Wireless Headphones</h3>
-                    <p class="text-slate-400 text-xs mb-4 line-clamp-1">Noise cancelling, 1-year-old, white color.</p>
-                    <div class="flex items-center justify-between pt-4 border-t border-slate-50">
-                        <p class="text-xl font-black text-slate-900">150 <span class="text-xs font-medium text-slate-400 uppercase">USDC</span></p>
-                        <button class="bg-slate-900 text-white px-5 py-2 rounded-xl font-bold text-sm hover:bg-indigo-600">Buy</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 4 (Sold Out Example) -->
-            <div class="bg-slate-50 rounded-[2rem] p-4 border border-dashed border-slate-200 opacity-60">
-                <div class="relative">
-                    <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=400&q=80" alt="Macbook" class="w-full aspect-square object-cover rounded-[1.5rem] mb-5 grayscale">
-                    <span class="absolute inset-0 flex items-center justify-center bg-white/40 font-black text-slate-600 text-sm tracking-widest">SOLD</span>
-                </div>
-                <div class="px-2">
-                    <h3 class="font-bold text-lg mb-1">MacBook Pro 2019</h3>
-                    <div class="flex items-center justify-between pt-4">
-                        <p class="text-xl font-black text-slate-300">700 USDC</p>
-                        <button disabled class="bg-slate-200 text-slate-400 px-5 py-2 rounded-xl font-bold text-sm cursor-not-allowed">Sold</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 5 -->
-            <div class="item-card bg-white rounded-[2rem] p-4 card-shadow border border-slate-100">
-                <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=400&q=80" alt="Books" class="w-full aspect-square object-cover rounded-[1.5rem] mb-5">
-                <div class="px-2">
-                    <h3 class="font-bold text-lg mb-1">Rare Book Collection</h3>
-                    <p class="text-slate-400 text-xs mb-4 line-clamp-1">Hardcover first editions, great condition.</p>
-                    <div class="flex items-center justify-between pt-4 border-t border-slate-50">
-                        <p class="text-xl font-black text-slate-900">30 <span class="text-xs font-medium text-slate-400 uppercase">USDC</span></p>
-                        <button class="bg-slate-900 text-white px-5 py-2 rounded-xl font-bold text-sm hover:bg-indigo-600">Buy</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 6 -->
-            <div class="item-card bg-white rounded-[2rem] p-4 card-shadow border border-slate-100">
-                <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=400&q=80" alt="Leather Jacket" class="w-full aspect-square object-cover rounded-[1.5rem] mb-5">
-                <div class="px-2">
-                    <h3 class="font-bold text-lg mb-1">Leather Biker Jacket</h3>
-                    <p class="text-slate-400 text-xs mb-4 line-clamp-1">Size M, genuine leather, vintage style.</p>
-                    <div class="flex items-center justify-between pt-4 border-t border-slate-50">
-                        <p class="text-xl font-black text-slate-900">80 <span class="text-xs font-medium text-slate-400 uppercase">USDC</span></p>
-                        <button class="bg-slate-900 text-white px-5 py-2 rounded-xl font-bold text-sm hover:bg-indigo-600">Buy</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 7 -->
-            <div class="item-card bg-white rounded-[2rem] p-4 card-shadow border border-slate-100">
-                <img src="https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=400&q=80" alt="Console" class="w-full aspect-square object-cover rounded-[1.5rem] mb-5">
-                <div class="px-2">
-                    <h3 class="font-bold text-lg mb-1">Gaming Monitor 27"</h3>
-                    <p class="text-slate-400 text-xs mb-4 line-clamp-1">144Hz refresh rate, no dead pixels.</p>
-                    <div class="flex items-center justify-between pt-4 border-t border-slate-50">
-                        <p class="text-xl font-black text-slate-900">210 <span class="text-xs font-medium text-slate-400 uppercase">USDC</span></p>
-                        <button class="bg-slate-900 text-white px-5 py-2 rounded-xl font-bold text-sm hover:bg-indigo-600">Buy</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 8 -->
-            <div class="item-card bg-white rounded-[2rem] p-4 card-shadow border border-slate-100">
-                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=400&q=80" alt="Speaker" class="w-full aspect-square object-cover rounded-[1.5rem] mb-5">
-                <div class="px-2">
-                    <h3 class="font-bold text-lg mb-1">Bluetooth Speaker</h3>
-                    <p class="text-slate-400 text-xs mb-4 line-clamp-1">Waterproof, amazing bass, slightly used.</p>
-                    <div class="flex items-center justify-between pt-4 border-t border-slate-50">
-                        <p class="text-xl font-black text-slate-900">55 <span class="text-xs font-medium text-slate-400 uppercase">USDC</span></p>
-                        <button class="bg-slate-900 text-white px-5 py-2 rounded-xl font-bold text-sm hover:bg-indigo-600">Buy</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 9 -->
-            <div class="item-card bg-white rounded-[2rem] p-4 card-shadow border border-slate-100">
-                <img src="https://images.unsplash.com/photo-1544724569-5f546fd6f2b5?auto=format&fit=crop&w=400&q=80" alt="Sneakers" class="w-full aspect-square object-cover rounded-[1.5rem] mb-5">
-                <div class="px-2">
-                    <h3 class="font-bold text-lg mb-1">Limited Sneakers</h3>
-                    <p class="text-slate-400 text-xs mb-4 line-clamp-1">Size 10, worn twice, like new.</p>
-                    <div class="flex items-center justify-between pt-4 border-t border-slate-50">
-                        <p class="text-xl font-black text-slate-900">95 <span class="text-xs font-medium text-slate-400 uppercase">USDC</span></p>
-                        <button class="bg-slate-900 text-white px-5 py-2 rounded-xl font-bold text-sm hover:bg-indigo-600">Buy</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 10 -->
-            <div class="item-card bg-white rounded-[2rem] p-4 card-shadow border border-slate-100">
-                <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=400&q=80" alt="iPhone" class="w-full aspect-square object-cover rounded-[1.5rem] mb-5">
-                <div class="px-2">
-                    <h3 class="font-bold text-lg mb-1">iPhone 12 Mini</h3>
-                    <p class="text-slate-400 text-xs mb-4 line-clamp-1">64GB, Battery Health 85%, Blue color.</p>
-                    <div class="flex items-center justify-between pt-4 border-t border-slate-50">
-                        <p class="text-xl font-black text-slate-900">320 <span class="text-xs font-medium text-slate-400 uppercase">USDC</span></p>
-                        <button class="bg-slate-900 text-white px-5 py-2 rounded-xl font-bold text-sm hover:bg-indigo-600">Buy</button>
-                    </div>
-                </div>
-            </div>
-
+            <!-- Generating 8 more cards for the demo... -->
+            <script>
+                const categories = ['electronics', 'furniture'];
+                const names = ['Laptop', 'Sofa', 'Watch', 'Table', 'Camera', 'Bed', 'Headphones', 'Desk'];
+                for(let i=0; i<8; i++) {
+                    const cat = categories[i % 2];
+                    document.write(`
+                        <div class="item-card bg-white p-4 rounded-[2rem] border border-slate-100 ${cat}">
+                            <img src="https://source.unsplash.com/random/300x300?${names[i]}" class="rounded-2xl mb-4 aspect-square object-cover">
+                            <h3 class="font-bold">${names[i]}</h3>
+                            <p class="text-xs text-slate-400 mb-4 text-gray-500">Pre-owned, good condition.</p>
+                            <div class="flex justify-between items-center">
+                                <span class="font-black text-lg">${(i+1)*25} USDC</span>
+                                <button class="bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-bold">Buy</button>
+                            </div>
+                        </div>
+                    `);
+                }
+            </script>
         </div>
     </main>
 
-    <footer class="mt-20 border-t border-slate-200 py-12 bg-white text-center">
-        <p class="text-slate-400 text-xs font-medium uppercase tracking-widest">© 2026 ArcRelay Protocol • Built on Arc Testnet</p>
-    </footer>
+    <script>
+        // 1. Wallet Connection Logic
+        async function connectWallet() {
+            if (window.ethereum) {
+                try {
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    const walletBtn = document.getElementById('walletBtn');
+                    walletBtn.innerText = accounts[0].substring(0, 6) + '...' + accounts[0].substring(38);
+                    walletBtn.classList.remove('btn-primary');
+                    walletBtn.classList.add('bg-green-500');
+                    alert("Connected to: " + accounts[0]);
+                } catch (error) {
+                    console.error("User rejected connection");
+                }
+            } else {
+                alert("Please install MetaMask!");
+            }
+        }
 
+        // 2. Category Filtering Logic
+        function filterItems(category) {
+            const cards = document.querySelectorAll('.item-card');
+            const buttons = document.querySelectorAll('.filter-btn');
+            
+            // Update buttons UI
+            buttons.forEach(btn => btn.classList.remove('active-filter', 'bg-indigo-600', 'text-white'));
+            event.target.classList.add('active-filter');
+
+            cards.forEach(card => {
+                if (category === 'all' || card.classList.contains(category)) {
+                    card.classList.remove('hidden-item');
+                } else {
+                    card.classList.add('hidden-item');
+                }
+            });
+        }
+
+        // 3. Form Submission Handling
+        document.getElementById('listingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('itemName').value;
+            alert("Success! " + name + " has been listed on Arc Testnet (Check Console for transaction simulation).");
+            console.log("Transaction would be sent here to your Smart Contract");
+            this.reset();
+        });
+    </script>
 </body>
 </html>
