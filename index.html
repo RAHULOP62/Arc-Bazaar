@@ -3,111 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArcMarket | Buy & Sell</title>
+    <title>ArcMarket | Buy & Sell on Arc Testnet</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Smooth transitions for mobile buttons */
-        .active-scale:active { transform: scale(0.95); }
+        /* Custom styles for better mobile experience */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        .tap-feedback:active {
+            transform: scale(0.98);
+            transition: transform 0.1s;
+        }
+        /* Scannable card adjustments */
+        .item-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @media (min-width: 768px) {
+            .item-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            }
+        }
     </style>
 </head>
-<body class="bg-slate-50 font-sans antialiased">
+<body class="bg-slate-50 font-sans text-slate-900 antialiased">
 
-    <!-- Navigation: Mobile friendly padding -->
-    <nav class="bg-white shadow-sm p-4 sticky top-0 z-50">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl md:text-2xl font-bold text-indigo-600 tracking-tight">ArcMarket</h1>
-            <button id="connectWallet" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm md:text-base font-semibold active-scale hover:bg-indigo-700 transition-all">
+    <!-- Navigation: Responsive Header -->
+    <nav class="glass-effect shadow-sm sticky top-0 z-[100] border-b border-slate-200">
+        <div class="container mx-auto px-4 md:px-6 h-16 md:h-20 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+                    <span class="text-white font-bold text-xl">A</span>
+                </div>
+                <h1 class="text-xl md:text-2xl font-extrabold text-indigo-700 tracking-tight">ArcMarket</h1>
+            </div>
+            <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 md:px-6 md:py-2.5 rounded-xl font-bold text-sm md:text-base tap-feedback shadow-lg shadow-indigo-200 transition-all">
                 Connect Wallet
             </button>
         </div>
     </nav>
 
-    <!-- Main Container -->
-    <main class="container mx-auto px-4 py-6 md:py-10">
+    <main class="container mx-auto px-4 md:px-6 py-8 md:py-12">
         
-        <!-- Section: Post Ad (Width adjustments for PC vs Mobile) -->
-        <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 md:p-8 mb-10 max-w-3xl mx-auto">
-            <h2 class="text-lg md:text-xl font-bold mb-5 text-slate-800 border-b pb-3">Naya Ad Dalein</h2>
-            
-            <div class="space-y-4">
-                <div>
-                    <label class="text-xs font-semibold text-slate-500 uppercase">Item Name</label>
-                    <input type="text" placeholder="e.g. iPhone 12" class="w-full border border-slate-200 p-3 rounded-xl mt-1 focus:ring-2 focus:ring-indigo-400 outline-none">
+        <!-- Post Ad Section: Mobile First Width -->
+        <section class="max-w-4xl mx-auto mb-16">
+            <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+                <div class="bg-indigo-50 px-6 py-4 border-b border-indigo-100">
+                    <h2 class="text-lg md:text-xl font-bold text-indigo-900">Purana Saaman Bechein (Sell Item)</h2>
                 </div>
                 
-                <div>
-                    <label class="text-xs font-semibold text-slate-500 uppercase">Description</label>
-                    <textarea placeholder="Condition aur details likhein..." class="w-full border border-slate-200 p-3 rounded-xl mt-1 h-24 focus:ring-2 focus:ring-indigo-400 outline-none"></textarea>
-                </div>
-
-                <!-- Price and Image in 2 columns on PC, 1 column on Mobile -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-6 md:p-8 space-y-6">
+                    <!-- Name input -->
                     <div>
-                        <label class="text-xs font-semibold text-slate-500 uppercase">Price (USDC)</label>
-                        <input type="number" placeholder="0.00" class="w-full border border-slate-200 p-3 rounded-xl mt-1 focus:ring-2 focus:ring-indigo-400 outline-none">
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Item ka naam</label>
+                        <input type="text" placeholder="e.g. iPhone 12 Pro" class="w-full bg-slate-50 border border-slate-200 p-4 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all">
                     </div>
-                    <div>
-                        <label class="text-xs font-semibold text-slate-500 uppercase">Image URL</label>
-                        <input type="text" placeholder="https://ipfs.io/..." class="w-full border border-slate-200 p-3 rounded-xl mt-1 focus:ring-2 focus:ring-indigo-400 outline-none">
-                    </div>
-                </div>
 
-                <button class="w-full bg-emerald-500 text-white py-4 rounded-xl font-bold text-lg active-scale hover:bg-emerald-600 shadow-md transition-all mt-2">
-                    List Item Now
-                </button>
+                    <!-- Description -->
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Details</label>
+                        <textarea placeholder="Saaman ki condition aur khasiyat batayein..." class="w-full bg-slate-50 border border-slate-200 p-4 rounded-2xl h-32 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"></textarea>
+                    </div>
+
+                    <!-- Price & Image URL: Grid for Desktop, Single Column for Mobile -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Price (USDC)</label>
+                            <div class="relative">
+                                <input type="number" placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 p-4 pl-12 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 outline-none">
+                                <span class="absolute left-4 top-4 font-bold text-slate-400">$</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Image URL (IPFS)</label>
+                            <input type="text" placeholder="https://ipfs.io/..." class="w-full bg-slate-50 border border-slate-200 p-4 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 outline-none">
+                        </div>
+                    </div>
+
+                    <button class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-5 rounded-2xl font-black text-lg md:text-xl tap-feedback shadow-xl shadow-emerald-100 transition-all uppercase tracking-wider">
+                        List on Arc Testnet
+                    </button>
+                </div>
             </div>
         </section>
 
-        <!-- Section: Listings Grid -->
-        <div class="flex justify-between items-end mb-6">
-            <h2 class="text-xl md:text-2xl font-bold text-slate-800">Recent Listings</h2>
-            <span class="text-indigo-600 text-sm font-medium cursor-pointer">View All</span>
+        <!-- Divider -->
+        <div class="flex items-center gap-4 mb-10">
+            <h2 class="text-2xl md:text-3xl font-black text-slate-800 shrink-0">Recent Listings</h2>
+            <div class="h-[2px] bg-slate-200 w-full rounded-full"></div>
         </div>
 
-        <!-- RESPONSIVE GRID: 1 col on mobile, 2 on tablet, 3 on PC -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- RESPONSIVE GRID SYSTEM -->
+        <!-- 1 Col on Mobile (<640px), 2 Cols on Tablet (>=640px), 3 Cols on PC (>=1024px) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
             
             <!-- Item Card 1 -->
-            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
-                <div class="h-48 bg-slate-200 relative">
-                    <!-- Placeholder Image -->
-                    <div class="absolute inset-0 flex items-center justify-center text-slate-400">Image Preview</div>
-                    <span class="absolute top-3 left-3 bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase">New</span>
+            <div class="item-card bg-white rounded-[2.5rem] p-4 shadow-sm border border-slate-100 group">
+                <div class="aspect-video bg-slate-100 rounded-[2rem] mb-6 overflow-hidden relative">
+                    <div class="absolute inset-0 flex items-center justify-center text-slate-400 font-medium italic">No Image</div>
+                    <span class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black text-indigo-600 uppercase shadow-sm">Verified</span>
                 </div>
-                <div class="p-5">
-                    <h3 class="font-bold text-lg text-slate-800 mb-1">Gaming Laptop</h3>
-                    <p class="text-slate-500 text-sm mb-4 line-clamp-2">Excellent condition, 16GB RAM, 1TB SSD. Arc Testnet delivery available.</p>
-                    <div class="flex justify-between items-center pt-3 border-t">
-                        <span class="text-xl font-black text-slate-900">500 <span class="text-sm font-normal text-slate-500">USDC</span></span>
-                        <button class="bg-indigo-600 text-white px-5 py-2 rounded-lg font-semibold active-scale">Buy</button>
+                <div class="px-2 pb-2">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-xl text-slate-800">Gaming Laptop</h3>
+                        <span class="text-[10px] bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-md font-bold uppercase">New</span>
+                    </div>
+                    <p class="text-slate-500 text-sm line-clamp-2 mb-6">Bahut acchi condition mein hai, 16GB RAM aur RTX graphics card ke saath.</p>
+                    <div class="flex justify-between items-center bg-slate-50 p-4 rounded-2xl">
+                        <div>
+                            <span class="block text-[10px] font-bold text-slate-400 uppercase">Price</span>
+                            <span class="text-xl font-black text-slate-900 tracking-tight">500 <span class="text-xs text-slate-500">USDC</span></span>
+                        </div>
+                        <button class="bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-bold tap-feedback">Buy Now</button>
                     </div>
                 </div>
             </div>
 
             <!-- Item Card 2 -->
-            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
-                <div class="h-48 bg-slate-200 flex items-center justify-center text-slate-400">Image Preview</div>
-                <div class="p-5">
-                    <h3 class="font-bold text-lg text-slate-800 mb-1">Mountain Bike</h3>
-                    <p class="text-slate-500 text-sm mb-4 line-clamp-2">2 saal purani, gear working fine. Best for off-roading.</p>
-                    <div class="flex justify-between items-center pt-3 border-t">
-                        <span class="text-xl font-black text-slate-900">120 <span class="text-sm font-normal text-slate-500">USDC</span></span>
-                        <button class="bg-indigo-600 text-white px-5 py-2 rounded-lg font-semibold active-scale">Buy</button>
+            <div class="item-card bg-white rounded-[2.5rem] p-4 shadow-sm border border-slate-100">
+                <div class="aspect-video bg-slate-100 rounded-[2rem] mb-6 flex items-center justify-center text-slate-400 italic font-medium">No Image</div>
+                <div class="px-2 pb-2">
+                    <h3 class="font-bold text-xl text-slate-800 mb-2">Mountain Bike</h3>
+                    <p class="text-slate-500 text-sm line-clamp-2 mb-6">2 saal purani, bilkul naye tyres aur gear system ke saath.</p>
+                    <div class="flex justify-between items-center bg-slate-50 p-4 rounded-2xl">
+                        <div>
+                            <span class="block text-[10px] font-bold text-slate-400 uppercase">Price</span>
+                            <span class="text-xl font-black text-slate-900 tracking-tight">120 <span class="text-xs text-slate-500">USDC</span></span>
+                        </div>
+                        <button class="bg-indigo-600 text-white px-6 py-2.5 rounded-xl font-bold tap-feedback">Buy Now</button>
                     </div>
                 </div>
             </div>
 
             <!-- Item Card 3 (Sold State) -->
-            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 opacity-60">
-                <div class="h-48 bg-slate-300 relative flex items-center justify-center">
-                    <span class="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-lg font-bold text-slate-800 shadow-sm">SOLD OUT</span>
+            <div class="item-card bg-slate-100/50 rounded-[2.5rem] p-4 border border-dashed border-slate-200">
+                <div class="aspect-video bg-slate-200 rounded-[2rem] mb-6 flex items-center justify-center relative">
+                    <div class="bg-slate-800/80 text-white px-6 py-2 rounded-full font-black text-sm tracking-widest uppercase">Sold Out</div>
                 </div>
-                <div class="p-5 text-slate-400">
-                    <h3 class="font-bold text-lg mb-1">DSLR Camera</h3>
-                    <p class="text-sm mb-4">Sold on Arc Network.</p>
-                    <div class="flex justify-between items-center pt-3 border-t">
-                        <span class="text-xl font-black italic">350 USDC</span>
-                        <button disabled class="bg-slate-200 text-slate-400 px-5 py-2 rounded-lg font-semibold cursor-not-allowed">Sold</button>
+                <div class="px-2 pb-2 opacity-50">
+                    <h3 class="font-bold text-xl text-slate-400 mb-2">DSLR Camera</h3>
+                    <p class="text-slate-400 text-sm mb-6 line-clamp-2">Canon EOS with 18-55mm Lens.</p>
+                    <div class="flex justify-between items-center p-4">
+                        <span class="text-xl font-black text-slate-400 italic underline decoration-slate-300">350 USDC</span>
+                        <button disabled class="bg-slate-300 text-white px-6 py-2.5 rounded-xl font-bold cursor-not-allowed">Sold</button>
                     </div>
                 </div>
             </div>
@@ -115,8 +154,17 @@
         </div>
     </main>
 
-    <footer class="text-center py-10 border-t border-slate-200 text-slate-400 text-xs mt-10">
-        &copy; 2026 ArcMarket • Powered by Arc Testnet Protocol
+    <!-- Footer: Scannable Links -->
+    <footer class="bg-white border-t border-slate-200 py-12 mt-20">
+        <div class="container mx-auto px-4 text-center">
+            <p class="font-bold text-indigo-600 mb-2">ArcMarket Protocol</p>
+            <p class="text-slate-400 text-sm px-6">Built for the future of decentralized commerce on Arc Testnet.</p>
+            <div class="flex justify-center gap-6 mt-6 text-slate-300">
+                <span class="text-[10px] font-bold uppercase tracking-widest">Privacy</span>
+                <span class="text-[10px] font-bold uppercase tracking-widest">Terms</span>
+                <span class="text-[10px] font-bold uppercase tracking-widest">Docs</span>
+            </div>
+        </div>
     </footer>
 
 </body>
