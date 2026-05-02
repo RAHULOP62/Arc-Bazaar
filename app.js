@@ -1,63 +1,75 @@
 /**
- * ArcRelay Marketplace - Arc Testnet Version
+ * ArcRelay Marketplace - Professional Arc Testnet Integration
+ * Reference: image_cd553f.jpg for UI confirmation flow.
  */
 
-// Arc Testnet Configuration
-const ARC_TESTNET_PARAMS = {
-    chainId: '0x1F4', // Example Chain ID (Aap apne actual Arc Chain ID se replace karein)
+// 1. Arc Testnet Configuration
+const ARC_CONFIG = {
+    chainId: '0x1F4', // 500 in Decimal
     chainName: 'Arc Testnet',
+    rpcUrl: 'https://rpc-testnet.arc.io', // Replace with your actual RPC
     nativeCurrency: { name: 'ARC', symbol: 'ARC', decimals: 18 },
-    rpcUrls: ['https://rpc-testnet.arc.io'], // Replace with actual Arc RPC
-    blockExplorerUrls: ['https://explorer.arc.io']
+    blockExplorer: 'https://explorer.arc.io'
 };
 
 let provider, signer, userAddress;
 
-// 1. Switch to Arc Testnet Automatically
-async function switchToArcTestnet() {
-    try {
-        await window.ethereum.request({
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId: ARC_TESTNET_PARAMS.chainId }],
-        });
-    } catch (switchError) {
-        if (switchError.code === 4902) {
-            try {
+/**
+ * Ensures the user is on the correct network before any action
+ */
+async function checkAndSwitchNetwork() {
+    const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
+    if (currentChainId !== ARC_CONFIG.chainId) {
+        try {
+            await window.ethereum.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: ARC_CONFIG.chainId }],
+            });
+        } catch (error) {
+            if (error.code === 4902) {
                 await window.ethereum.request({
                     method: 'wallet_addEthereumChain',
-                    params: [ARC_TESTNET_PARAMS],
+                    params: [{
+                        chainId: ARC_CONFIG.chainId,
+                        chainName: ARC_CONFIG.chainName,
+                        nativeCurrency: ARC_CONFIG.nativeCurrency,
+                        rpcUrls: [ARC_CONFIG.rpcUrl],
+                        blockExplorerUrls: [ARC_CONFIG.blockExplorer]
+                    }]
                 });
-            } catch (addError) {
-                console.error("Could not add Arc Testnet", addError);
             }
         }
     }
 }
 
-// 2. Connect Wallet with Network Check
+/**
+ * Wallet Connection Logic
+ */
 async function connectWallet() {
-    if (window.ethereum) {
-        try {
-            await switchToArcTestnet();
-            
-            provider = new ethers.BrowserProvider(window.ethereum);
-            signer = await provider.getSigner();
-            userAddress = await signer.getAddress();
+    if (!window.ethereum) return alert("Please install MetaMask!");
 
-            const walletBtn = document.getElementById('walletBtn');
-            walletBtn.innerText = `${userAddress.substring(0, 6)}...${userAddress.substring(38)}`;
-            walletBtn.classList.replace('bg-indigo-600', 'bg-emerald-500');
-            
-            console.log("Connected to Arc Testnet:", userAddress);
-        } catch (error) {
-            alert("Connection failed. Check MetaMask.");
-        }
-    } else {
-        alert("MetaMask not found!");
+    try {
+        await checkAndSwitchNetwork();
+        
+        provider = new ethers.BrowserProvider(window.ethereum);
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        signer = await provider.getSigner();
+        userAddress = accounts[0];
+
+        const walletBtn = document.getElementById('walletBtn');
+        walletBtn.innerText = `${userAddress.substring(0, 6)}...${userAddress.substring(38)}`;
+        walletBtn.className = "bg-emerald-500 text-white px-6 py-2.5 rounded-2xl font-bold text-sm shadow-lg shadow-emerald-100 transition-all";
+        
+        console.log("Connected to Arc Testnet:", userAddress);
+    } catch (error) {
+        console.error("Connection Error:", error);
     }
 }
 
-// 3. Real Arc Testnet Transaction Request
+/**
+ * Real Transaction Logic for "Buy" Button
+ * This triggers a MetaMask request and waits for on-chain confirmation.
+ */
 async function buyItem(button, itemName, price) {
     if (!userAddress) {
         await connectWallet();
@@ -65,57 +77,73 @@ async function buyItem(button, itemName, price) {
     }
 
     const originalText = button.innerText;
-    button.innerText = "Requesting...";
-    button.disabled = true;
-
+    
     try {
-        // Transaction Parameters
+        // UI Update: Show that we are waiting for the user to sign
+        button.innerText = "Check Wallet...";
+        button.disabled = true;
+        button.classList.add('opacity-70');
+
+        // Check network again just in case
+        await checkAndSwitchNetwork();
+
+        // Transaction details
+        // Note: For a real marketplace, you would call a Smart Contract function here.
+        // Example: await contract.purchase(itemId, { value: ethers.parseEther(price.toString()) });
         const txParams = {
-            to: "0xYOUR_CONTRACT_OR_TREASURY_ADDRESS", // Yaha apna wallet/contract address dalein
-            value: ethers.parseEther("0.01"), // For demo, sending small ARC amount
-            // Agar USDC use kar rahe hain toh yaha Contract Interaction logic aayega
+            to: "0xYourMarketplaceWalletAddressHere", // Replace with your receiving address
+            value: ethers.parseEther("0.001"), // Sending a small amount for the demo
         };
 
-        alert(`Confirm transaction for ${itemName} in your wallet.`);
+        const txResponse = await signer.sendTransaction(txParams);
         
-        const tx = await signer.sendTransaction(txParams);
-        
-        button.innerText = "Verifying...";
-        console.log("Transaction Sent:", tx.hash);
+        // UI Update: User signed, now waiting for the block to be mined
+        button.innerText = "Processing...";
+        console.log("Transaction Sent. Hash:", txResponse.hash);
 
-        // Wait for block confirmation
-        await tx.wait();
+        // WAITING FOR CONFIRMATION (Crucial Step)
+        const receipt = await txResponse.wait();
 
-        alert(`Success! ${itemName} is now yours. \nTx Hash: ${tx.hash}`);
-        
-        button.innerText = "Sold";
-        button.classList.add('bg-slate-100', 'text-slate-400', 'cursor-not-allowed');
-        button.onclick = null;
+        if (receipt.status === 1) {
+            // Success flow - Matches image_cd553f.jpg
+            alert(`Success! ${itemName} is now yours. Transaction confirmed on Arc Testnet.`);
+            
+            button.innerText = "Sold";
+            button.className = "bg-slate-100 text-slate-400 px-6 py-2 rounded-xl font-bold text-sm cursor-not-allowed";
+            button.onclick = null;
+            button.closest('.item-card').style.opacity = "0.6";
+        } else {
+            throw new Error("Transaction Failed");
+        }
 
     } catch (error) {
-        console.error("Arc Testnet Error:", error);
-        alert("Transaction Rejected or Failed.");
+        console.error("Transaction Error:", error);
+        alert(error.message || "Transaction Rejected");
         button.innerText = originalText;
         button.disabled = false;
+        button.classList.remove('opacity-70');
     }
 }
 
-// 4. Listing Logic
+/**
+ * Event Listener for Listing Form
+ */
 document.getElementById('listingForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if(!userAddress) return alert("Connect Wallet First");
+    if(!userAddress) return alert("Please connect wallet to list items.");
 
-    const name = document.getElementById('itemName').value;
-    const btn = e.target.querySelector('button');
-    
-    btn.innerText = "Waiting for Arc...";
-    btn.disabled = true;
+    const submitBtn = e.target.querySelector('button');
+    submitBtn.innerText = "Sign Listing...";
+    submitBtn.disabled = true;
 
-    // Yaha aapka Smart Contract logic add hoga
-    setTimeout(() => {
-        alert(`${name} listed on Arc Testnet!`);
-        btn.innerText = "Post Listing";
-        btn.disabled = false;
+    try {
+        // Here you would normally interact with your contract's 'list' function
+        await new Promise(resolve => setTimeout(resolve, 1500)); // Simulating network latency
+        
+        alert("Item listed successfully on Arc Testnet!");
         e.target.reset();
-    }, 2000);
+    } finally {
+        submitBtn.innerText = "Post Listing";
+        submitBtn.disabled = false;
+    }
 });
