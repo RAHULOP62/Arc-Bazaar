@@ -3,154 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArcRelay | Working Web3 Marketplace</title>
+    <title>ArcRelay | Professional Web3 Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.3s ease; }
-        .btn-primary { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); transition: all 0.2s; }
-        .btn-primary:active { transform: scale(0.95); }
-        .hidden-item { display: none; }
-        .active-filter { background: #4f46e5 !important; color: white !important; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .glass-nav { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); sticky top-0; z-index: 50; border-bottom: 1px solid #e2e8f0; }
+        .item-card { transition: transform 0.3s ease, box-shadow 0.3s ease; border-radius: 2rem; overflow: hidden; background: white; border: 1px solid #f1f5f9; }
+        .item-card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .btn-buy { background-color: #0f172a; color: white; transition: all 0.2s; }
+        .btn-buy:hover { background-color: #1e293b; transform: scale(1.05); }
+        .btn-buy:active { transform: scale(0.95); }
+        .sold-out { opacity: 0.5; pointer-events: none; }
     </style>
 </head>
-<body class="bg-[#f8fafc] text-[#1e293b]">
+<body>
 
-    <!-- Navigation -->
-    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-[100] border-b border-slate-200">
-        <div class="container mx-auto px-5 h-20 flex justify-between items-center">
+    <!-- Header -->
+    <nav class="glass-nav sticky top-0 h-20">
+        <div class="container mx-auto px-6 h-full flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center">
+                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
                 </div>
-                <span class="text-xl font-extrabold text-indigo-600">ArcRelay</span>
+                <span class="text-xl font-extrabold text-slate-900 tracking-tight">ArcRelay</span>
             </div>
-            <button id="walletBtn" onclick="connectWallet()" class="btn-primary text-white px-6 py-2.5 rounded-2xl font-bold text-sm shadow-lg shadow-indigo-100">
+            <button id="walletBtn" onclick="connectWallet()" class="bg-indigo-600 text-white px-6 py-2.5 rounded-2xl font-bold text-sm shadow-md hover:bg-indigo-700 transition-all">
                 Connect Wallet
             </button>
         </div>
     </nav>
 
-    <main class="container mx-auto px-5 py-10">
+    <main class="container mx-auto px-6 py-12">
         
-        <!-- Form Section -->
-        <section class="max-w-2xl mx-auto mb-20 bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100">
-            <h2 class="text-2xl font-bold mb-6">List Your Item</h2>
-            <form id="listingForm" class="space-y-4">
-                <input type="text" id="itemName" placeholder="Item Name" class="w-full bg-slate-50 p-4 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" required>
-                <textarea id="itemDesc" placeholder="Description" class="w-full bg-slate-50 p-4 rounded-xl h-24 outline-none focus:ring-2 focus:ring-indigo-500" required></textarea>
-                <div class="grid grid-cols-2 gap-4">
-                    <input type="number" id="itemPrice" placeholder="Price (USDC)" class="bg-slate-50 p-4 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" required>
-                    <select id="itemCat" class="bg-slate-50 p-4 rounded-xl outline-none">
-                        <option value="electronics">Electronics</option>
-                        <option value="furniture">Furniture</option>
-                    </select>
-                </div>
-                <button type="submit" class="w-full btn-primary text-white py-4 rounded-xl font-bold uppercase tracking-widest shadow-xl shadow-indigo-100">
-                    Post Listing
-                </button>
-            </form>
-        </section>
-
-        <!-- Filters -->
-        <div class="flex justify-between items-center mb-10">
-            <h2 class="text-3xl font-black">Marketplace</h2>
-            <div class="flex gap-2" id="filterGroup">
-                <button onclick="filterItems('all')" class="filter-btn active-filter px-6 py-2 rounded-full border border-slate-200 text-xs font-bold transition-all">All Items</button>
-                <button onclick="filterItems('electronics')" class="filter-btn bg-white px-6 py-2 rounded-full border border-slate-200 text-xs font-bold transition-all">Electronics</button>
-                <button onclick="filterItems('furniture')" class="filter-btn bg-white px-6 py-2 rounded-full border border-slate-200 text-xs font-bold transition-all">Furniture</button>
-            </div>
+        <!-- Section Header -->
+        <div class="mb-12">
+            <h2 class="text-3xl font-extrabold text-slate-900">Explore Market</h2>
+            <p class="text-slate-500 mt-2">Verified second-hand items on Arc Testnet</p>
         </div>
 
-        <!-- Grid of 10 Items -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="itemsGrid">
-            <!-- 10 Mock Items with different categories -->
-            <div class="item-card bg-white p-4 rounded-[2rem] border border-slate-100 electronics">
-                <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300" class="rounded-2xl mb-4 aspect-square object-cover">
-                <h3 class="font-bold">iPhone 12</h3>
-                <p class="text-xs text-slate-400 mb-4">Old but gold. 64GB.</p>
-                <div class="flex justify-between items-center">
-                    <span class="font-black text-lg">300 USDC</span>
-                    <button class="bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-bold">Buy</button>
+        <!-- Items Grid (Showing 10 Items) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" id="marketGrid">
+            
+            <!-- Item 1 -->
+            <div class="item-card p-4 flex flex-col">
+                <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=500&q=80" class="rounded-[1.5rem] aspect-square object-cover mb-4">
+                <h3 class="font-bold text-lg text-slate-800">iPhone 12</h3>
+                <p class="text-slate-400 text-xs mb-6">Excellent condition, 64GB, Blue.</p>
+                <div class="mt-auto flex justify-between items-center">
+                    <span class="font-black text-xl text-slate-900">300 <span class="text-xs text-slate-400">USDC</span></span>
+                    <button onclick="buyItem(this, 'iPhone 12', 300)" class="btn-buy px-6 py-2 rounded-xl font-bold text-sm">Buy</button>
                 </div>
             </div>
-            <!-- Repeat for other items (9 more) -->
-            <div class="item-card bg-white p-4 rounded-[2rem] border border-slate-100 furniture">
-                <img src="https://images.unsplash.com/photo-1592078615290-033ee584e267?w=300" class="rounded-2xl mb-4 aspect-square object-cover">
-                <h3 class="font-bold">Wooden Chair</h3>
-                <p class="text-xs text-slate-400 mb-4">Oak wood, very sturdy.</p>
-                <div class="flex justify-between items-center">
-                    <span class="font-black text-lg">50 USDC</span>
-                    <button class="bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-bold">Buy</button>
+
+            <!-- Item 2 -->
+            <div class="item-card p-4 flex flex-col">
+                <img src="https://images.unsplash.com/photo-1592078615290-033ee584e267?auto=format&fit=crop&w=500&q=80" class="rounded-[1.5rem] aspect-square object-cover mb-4">
+                <h3 class="font-bold text-lg text-slate-800">Wooden Chair</h3>
+                <p class="text-slate-400 text-xs mb-6">Minimalist design, solid oak wood.</p>
+                <div class="mt-auto flex justify-between items-center">
+                    <span class="font-black text-xl text-slate-900">50 <span class="text-xs text-slate-400">USDC</span></span>
+                    <button onclick="buyItem(this, 'Wooden Chair', 50)" class="btn-buy px-6 py-2 rounded-xl font-bold text-sm">Buy</button>
                 </div>
             </div>
-            <!-- Generating 8 more cards for the demo... -->
-            <script>
-                const categories = ['electronics', 'furniture'];
-                const names = ['Laptop', 'Sofa', 'Watch', 'Table', 'Camera', 'Bed', 'Headphones', 'Desk'];
-                for(let i=0; i<8; i++) {
-                    const cat = categories[i % 2];
-                    document.write(`
-                        <div class="item-card bg-white p-4 rounded-[2rem] border border-slate-100 ${cat}">
-                            <img src="https://source.unsplash.com/random/300x300?${names[i]}" class="rounded-2xl mb-4 aspect-square object-cover">
-                            <h3 class="font-bold">${names[i]}</h3>
-                            <p class="text-xs text-slate-400 mb-4 text-gray-500">Pre-owned, good condition.</p>
-                            <div class="flex justify-between items-center">
-                                <span class="font-black text-lg">${(i+1)*25} USDC</span>
-                                <button class="bg-slate-900 text-white px-4 py-2 rounded-lg text-xs font-bold">Buy</button>
-                            </div>
-                        </div>
-                    `);
-                }
-            </script>
+
+            <!-- Item 3 -->
+            <div class="item-card p-4 flex flex-col">
+                <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=500&q=80" class="rounded-[1.5rem] aspect-square object-cover mb-4">
+                <h3 class="font-bold text-lg text-slate-800">MacBook Pro</h3>
+                <p class="text-slate-400 text-xs mb-6">M1 Chip, 8GB RAM, Space Gray.</p>
+                <div class="mt-auto flex justify-between items-center">
+                    <span class="font-black text-xl text-slate-900">850 <span class="text-xs text-slate-400">USDC</span></span>
+                    <button onclick="buyItem(this, 'MacBook Pro', 850)" class="btn-buy px-6 py-2 rounded-xl font-bold text-sm">Buy</button>
+                </div>
+            </div>
+
+            <!-- More items generated via JS for the demo -->
         </div>
     </main>
 
     <script>
-        // 1. Wallet Connection Logic
+        let userAddress = null;
+
+        // 1. Connect Wallet Logic
         async function connectWallet() {
             if (window.ethereum) {
                 try {
                     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    const walletBtn = document.getElementById('walletBtn');
-                    walletBtn.innerText = accounts[0].substring(0, 6) + '...' + accounts[0].substring(38);
-                    walletBtn.classList.remove('btn-primary');
-                    walletBtn.classList.add('bg-green-500');
-                    alert("Connected to: " + accounts[0]);
-                } catch (error) {
-                    console.error("User rejected connection");
+                    userAddress = accounts[0];
+                    const btn = document.getElementById('walletBtn');
+                    btn.innerText = userAddress.substring(0, 6) + '...' + userAddress.substring(38);
+                    btn.classList.replace('bg-indigo-600', 'bg-emerald-500');
+                    console.log("Connected:", userAddress);
+                } catch (err) {
+                    alert("Connection rejected");
                 }
             } else {
                 alert("Please install MetaMask!");
             }
         }
 
-        // 2. Category Filtering Logic
-        function filterItems(category) {
-            const cards = document.querySelectorAll('.item-card');
-            const buttons = document.querySelectorAll('.filter-btn');
-            
-            // Update buttons UI
-            buttons.forEach(btn => btn.classList.remove('active-filter', 'bg-indigo-600', 'text-white'));
-            event.target.classList.add('active-filter');
+        // 2. Functional Buy Logic
+        async function buyItem(button, name, price) {
+            if (!userAddress) {
+                alert("Please connect your wallet first!");
+                return;
+            }
 
-            cards.forEach(card => {
-                if (category === 'all' || card.classList.contains(category)) {
-                    card.classList.remove('hidden-item');
-                } else {
-                    card.classList.add('hidden-item');
-                }
-            });
+            // UI Feedback
+            const originalText = button.innerText;
+            button.innerText = "Processing...";
+            button.disabled = true;
+
+            try {
+                // Simulate a transaction on Arc Testnet
+                // In a real app, you would call: await contract.buyItem(itemId)
+                alert(`Initiating purchase for ${name} for ${price} USDC... Check your MetaMask.`);
+                
+                // Simulating 2 second blockchain delay
+                setTimeout(() => {
+                    button.innerText = "Sold";
+                    button.classList.replace('bg-slate-900', 'bg-slate-200');
+                    button.classList.add('text-slate-500', 'cursor-not-allowed');
+                    button.closest('.item-card').classList.add('sold-out');
+                    alert(`Success! ${name} is now yours. Transaction confirmed on Arc Testnet.`);
+                }, 2000);
+
+            } catch (error) {
+                alert("Transaction failed!");
+                button.innerText = originalText;
+                button.disabled = false;
+            }
         }
 
-        // 3. Form Submission Handling
-        document.getElementById('listingForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('itemName').value;
-            alert("Success! " + name + " has been listed on Arc Testnet (Check Console for transaction simulation).");
-            console.log("Transaction would be sent here to your Smart Contract");
-            this.reset();
+        // Add remaining items to make it 10
+        const extraItems = [
+            { name: "Camera Lens", price: 120, img: "https://images.unsplash.com/photo-1516724562728-afc824a36e84?w=500" },
+            { name: "Coffee Table", price: 40, img: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=500" },
+            { name: "Headphones", price: 190, img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" },
+            { name: "Bicycle", price: 210, img: "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=500" },
+            { name: "Smart Watch", price: 75, img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" },
+            { name: "Leather Bag", price: 60, img: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500" },
+            { name: "Desk Lamp", price: 15, img: "https://images.unsplash.com/photo-1534073828943-f801091bb18c?w=500" }
+        ];
+
+        const grid = document.getElementById('marketGrid');
+        extraItems.forEach(item => {
+            grid.innerHTML += `
+                <div class="item-card p-4 flex flex-col">
+                    <img src="${item.img}" class="rounded-[1.5rem] aspect-square object-cover mb-4">
+                    <h3 class="font-bold text-lg text-slate-800">${item.name}</h3>
+                    <p class="text-slate-400 text-xs mb-6">Pre-owned, verified quality.</p>
+                    <div class="mt-auto flex justify-between items-center">
+                        <span class="font-black text-xl text-slate-900">${item.price} <span class="text-xs text-slate-400">USDC</span></span>
+                        <button onclick="buyItem(this, '${item.name}', ${item.price})" class="btn-buy px-6 py-2 rounded-xl font-bold text-sm">Buy</button>
+                    </div>
+                </div>
+            `;
         });
     </script>
 </body>
