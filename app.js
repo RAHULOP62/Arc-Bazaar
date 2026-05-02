@@ -1,149 +1,114 @@
 /**
- * ArcRelay Marketplace - Professional Arc Testnet Integration
- * Reference: image_cd553f.jpg for UI confirmation flow.
+ * ArcRelay Marketplace - Circle USDC Integration
+ * Network: Arc Testnet
  */
 
-// 1. Arc Testnet Configuration
 const ARC_CONFIG = {
-    chainId: '0x1F4', // 500 in Decimal
+    chainId: '0x1F4', 
     chainName: 'Arc Testnet',
-    rpcUrl: 'https://rpc-testnet.arc.io', // Replace with your actual RPC
-    nativeCurrency: { name: 'ARC', symbol: 'ARC', decimals: 18 },
-    blockExplorer: 'https://explorer.arc.io'
+    rpcUrl: 'https://rpc-testnet.arc.io', 
+    nativeCurrency: { name: 'USDC', symbol: 'USDC', decimals: 18 },
+    blockExplorer: 'https://testnet.arcscan.app'
 };
+
+// Circle USDC Contract Address on Arc Testnet
+const USDC_ADDRESS = "0x3600000000000000000000000000000000000000"; 
+
+// Minimal ABI to interact with USDC (ERC-20)
+const USDC_ABI = [
+    "function transfer(to, amount) returns (bool)",
+    "function decimals() view returns (uint8)",
+    "function balanceOf(owner) view returns (uint256)"
+];
 
 let provider, signer, userAddress;
 
-/**
- * Ensures the user is on the correct network before any action
- */
-async function checkAndSwitchNetwork() {
-    const currentChainId = await window.ethereum.request({ method: 'eth_chainId' });
-    if (currentChainId !== ARC_CONFIG.chainId) {
-        try {
-            await window.ethereum.request({
-                method: 'wallet_switchEthereumChain',
-                params: [{ chainId: ARC_CONFIG.chainId }],
-            });
-        } catch (error) {
-            if (error.code === 4902) {
-                await window.ethereum.request({
-                    method: 'wallet_addEthereumChain',
-                    params: [{
-                        chainId: ARC_CONFIG.chainId,
-                        chainName: ARC_CONFIG.chainName,
-                        nativeCurrency: ARC_CONFIG.nativeCurrency,
-                        rpcUrls: [ARC_CONFIG.rpcUrl],
-                        blockExplorerUrls: [ARC_CONFIG.blockExplorer]
-                    }]
-                });
-            }
-        }
-    }
-}
-
-/**
- * Wallet Connection Logic
- */
 async function connectWallet() {
-    if (!window.ethereum) return alert("Please install MetaMask!");
-
+    if (!window.ethereum) return alert("MetaMask install karein!");
     try {
         await checkAndSwitchNetwork();
-        
         provider = new ethers.BrowserProvider(window.ethereum);
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         signer = await provider.getSigner();
         userAddress = accounts[0];
-
-        const walletBtn = document.getElementById('walletBtn');
-        walletBtn.innerText = `${userAddress.substring(0, 6)}...${userAddress.substring(38)}`;
-        walletBtn.className = "bg-emerald-500 text-white px-6 py-2.5 rounded-2xl font-bold text-sm shadow-lg shadow-emerald-100 transition-all";
         
-        console.log("Connected to Arc Testnet:", userAddress);
+        updateWalletUI();
     } catch (error) {
         console.error("Connection Error:", error);
     }
 }
 
 /**
- * Real Transaction Logic for "Buy" Button
- * This triggers a MetaMask request and waits for on-chain confirmation.
+ * Real USDC Payment Transaction
  */
-async function buyItem(button, itemName, price) {
-    if (!userAddress) {
-        await connectWallet();
-        return;
-    }
+async function buyItem(button, itemName, priceInUSDC) {
+    if (!userAddress) { await connectWallet(); return; }
 
     const originalText = button.innerText;
     
     try {
-        // UI Update: Show that we are waiting for the user to sign
-        button.innerText = "Check Wallet...";
+        button.innerText = "Initiating...";
         button.disabled = true;
-        button.classList.add('opacity-70');
 
-        // Check network again just in case
         await checkAndSwitchNetwork();
 
-        // Transaction details
-        // Note: For a real marketplace, you would call a Smart Contract function here.
-        // Example: await contract.purchase(itemId, { value: ethers.parseEther(price.toString()) });
-        const txParams = {
-            to: "0xYourMarketplaceWalletAddressHere", // Replace with your receiving address
-            value: ethers.parseEther("0.001"), // Sending a small amount for the demo
-        };
+        // 1. Setup USDC Contract Instance
+        const usdcContract = new ethers.Contract(USDC_ADDRESS, USDC_ABI, signer);
 
-        const txResponse = await signer.sendTransaction(txParams);
+        // 2. Handle Decimals (USDC ERC-20 interface uses 6 decimals)
+        const amount = ethers.parseUnits(priceInUSDC.toString(), 6);
+
+        // 3. Request Transaction via MetaMask
+        console.log(`Requesting payment of ${priceInUSDC} USDC for ${itemName}`);
+        button.innerText = "Confirm in Wallet...";
         
-        // UI Update: User signed, now waiting for the block to be mined
-        button.innerText = "Processing...";
-        console.log("Transaction Sent. Hash:", txResponse.hash);
-
-        // WAITING FOR CONFIRMATION (Crucial Step)
-        const receipt = await txResponse.wait();
+        // This triggers the actual MetaMask popup
+        const tx = await usdcContract.transfer("0x0077777d7EBA4688BDeF3E311b846F25870A19B9", amount); 
+        
+        // 4. Wait for Blockchain Confirmation
+        button.innerText = "Verifying on Arc...";
+        const receipt = await tx.wait();
 
         if (receipt.status === 1) {
-            // Success flow - Matches image_cd553f.jpg
-            alert(`Success! ${itemName} is now yours. Transaction confirmed on Arc Testnet.`);
-            
-            button.innerText = "Sold";
-            button.className = "bg-slate-100 text-slate-400 px-6 py-2 rounded-xl font-bold text-sm cursor-not-allowed";
-            button.onclick = null;
-            button.closest('.item-card').style.opacity = "0.6";
-        } else {
-            throw new Error("Transaction Failed");
+            alert(`Payment Successful! Transaction Hash: ${tx.hash}`);
+            finalizePurchase(button);
         }
 
     } catch (error) {
-        console.error("Transaction Error:", error);
-        alert(error.message || "Transaction Rejected");
+        console.error("Transaction Failed:", error);
+        alert(error.reason || "Transaction Cancelled or Failed");
         button.innerText = originalText;
         button.disabled = false;
-        button.classList.remove('opacity-70');
     }
 }
 
-/**
- * Event Listener for Listing Form
- */
-document.getElementById('listingForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if(!userAddress) return alert("Please connect wallet to list items.");
-
-    const submitBtn = e.target.querySelector('button');
-    submitBtn.innerText = "Sign Listing...";
-    submitBtn.disabled = true;
-
-    try {
-        // Here you would normally interact with your contract's 'list' function
-        await new Promise(resolve => setTimeout(resolve, 1500)); // Simulating network latency
-        
-        alert("Item listed successfully on Arc Testnet!");
-        e.target.reset();
-    } finally {
-        submitBtn.innerText = "Post Listing";
-        submitBtn.disabled = false;
+// Helper: Network Switcher
+async function checkAndSwitchNetwork() {
+    const hexChainId = await window.ethereum.request({ method: 'eth_chainId' });
+    if (hexChainId !== ARC_CONFIG.chainId) {
+        try {
+            await window.ethereum.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: ARC_CONFIG.chainId }],
+            });
+        } catch (err) {
+            if (err.code === 4902) {
+                await window.ethereum.request({
+                    method: 'wallet_addEthereumChain',
+                    params: [ARC_CONFIG],
+                });
+            }
+        }
     }
-});
+}
+
+function finalizePurchase(button) {
+    button.innerText = "Owned";
+    button.className = "bg-slate-200 text-slate-500 px-6 py-2 rounded-xl font-bold text-sm cursor-not-allowed";
+    button.onclick = null;
+}
+
+function updateWalletUI() {
+    const btn = document.getElementById('walletBtn');
+    if(btn) btn.innerText = `${userAddress.substring(0,6)}...${userAddress.slice(-4)}`;
+}
