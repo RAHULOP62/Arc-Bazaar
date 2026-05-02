@@ -3,43 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArcRelay | Decentralized Marketplace</title>
+    <title>ArcRelay | Second-Hand Web3 Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        
-        .glass-nav {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-
-        .hero-gradient {
-            background: radial-gradient(circle at top right, #e0e7ff, #ffffff);
-        }
-
-        .btn-primary {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-        }
-
+        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .btn-primary { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); transition: all 0.2s; }
         .btn-primary:active { transform: scale(0.96); }
-
-        .card-shadow {
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04);
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #c7d2fe; border-radius: 10px; }
+        .card-shadow { box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.06); }
+        .item-card:hover { transform: translateY(-5px); transition: transform 0.3s ease; }
     </style>
 </head>
-<body class="bg-[#fcfcfd] text-[#1a1c21] antialiased hero-gradient">
+<body class="bg-[#f8fafc] text-[#1e293b] antialiased">
 
     <!-- Header -->
-    <nav class="glass-nav sticky top-0 z-[100] border-b border-indigo-50/50">
+    <nav class="glass-nav sticky top-0 z-[100] border-b border-slate-200">
         <div class="container mx-auto px-5 h-20 flex justify-between items-center">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
@@ -47,122 +26,158 @@
                 </div>
                 <span class="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600">ArcRelay</span>
             </div>
-            
-            <button class="btn-primary text-white px-6 py-2.5 rounded-2xl font-bold text-sm shadow-xl shadow-indigo-100 flex items-center gap-2">
-                <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+            <button class="btn-primary text-white px-6 py-2.5 rounded-2xl font-bold text-sm shadow-xl shadow-indigo-100">
                 Connect Wallet
             </button>
         </div>
     </nav>
 
-    <main class="container mx-auto px-5 py-10 md:py-16">
+    <main class="container mx-auto px-5 py-12">
         
-        <!-- Post Listing Section -->
-        <section class="max-w-3xl mx-auto mb-24">
-            <div class="text-center mb-10">
-                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-3">List Your Item</h2>
-                <p class="text-slate-500 font-medium">Convert your old goods into USDC on Arc Testnet</p>
-            </div>
-
-            <div class="bg-white rounded-[2.5rem] p-6 md:p-10 card-shadow border border-slate-100">
-                <div class="space-y-7">
-                    <!-- Title -->
-                    <div>
-                        <label class="block text-sm font-bold text-slate-400 uppercase tracking-widest mb-2 px-1">Item Title</label>
-                        <input type="text" placeholder="What are you selling?" class="w-full bg-slate-50 border-none p-4 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all text-lg font-semibold placeholder:font-normal">
-                    </div>
-
-                    <!-- Description -->
-                    <div>
-                        <label class="block text-sm font-bold text-slate-400 uppercase tracking-widest mb-2 px-1">Description</label>
-                        <textarea placeholder="Describe condition, age, and features..." class="w-full bg-slate-50 border-none p-4 rounded-2xl h-36 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all text-lg font-medium resize-none"></textarea>
-                    </div>
-
-                    <!-- Price & Media -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-bold text-slate-400 uppercase tracking-widest mb-2 px-1">Price (USDC)</label>
-                            <div class="relative group">
-                                <input type="number" placeholder="0.00" class="w-full bg-slate-50 border-none p-4 pl-12 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 outline-none font-bold text-lg">
-                                <div class="absolute left-4 top-4 text-indigo-500 font-bold">$</div>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold text-slate-400 uppercase tracking-widest mb-2 px-1">Image URL (IPFS)</label>
-                            <input type="text" placeholder="ipfs://..." class="w-full bg-slate-50 border-none p-4 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 outline-none">
-                        </div>
-                    </div>
-
-                    <button class="w-full btn-primary text-white py-5 rounded-[1.5rem] font-extrabold text-lg shadow-2xl shadow-indigo-200 uppercase tracking-widest">
-                        List Item to Marketplace
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Marketplace Feed -->
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+        <!-- Marketplace Header -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
             <div>
-                <h2 class="text-3xl font-extrabold text-slate-900">Explore Market</h2>
-                <p class="text-slate-500">Discover hand-picked items from the community</p>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">Explore Market</h2>
+                <p class="text-slate-500 mt-2">Browse 10 premium pre-owned items available for USDC</p>
             </div>
-            <div class="flex gap-2">
-                <span class="px-4 py-2 bg-white border border-slate-100 rounded-full text-xs font-bold text-slate-600 cursor-pointer hover:bg-slate-50">All Items</span>
-                <span class="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full text-xs font-bold cursor-pointer">Electronics</span>
+            <div class="flex flex-wrap gap-2">
+                <span class="px-5 py-2 bg-indigo-600 text-white rounded-full text-xs font-bold shadow-lg shadow-indigo-100 cursor-pointer">All Items</span>
+                <span class="px-5 py-2 bg-white border border-slate-200 rounded-full text-xs font-bold text-slate-600 cursor-pointer hover:bg-slate-50">Electronics</span>
+                <span class="px-5 py-2 bg-white border border-slate-200 rounded-full text-xs font-bold text-slate-600 cursor-pointer hover:bg-slate-50">Furniture</span>
             </div>
         </div>
 
-        <!-- RESPONSIVE GRID -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- 10 ITEM GRID -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             
-            <!-- Item Card 1 -->
-            <div class="group bg-white rounded-[2rem] p-4 card-shadow border border-slate-50 hover:border-indigo-100 transition-all">
-                <div class="aspect-square bg-slate-100 rounded-[1.5rem] mb-5 overflow-hidden relative">
-                    <div class="absolute inset-0 flex items-center justify-center text-slate-300 font-bold">PREVIEW</div>
-                    <div class="absolute top-3 left-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-black text-indigo-600">NEW LISTING</div>
-                </div>
+            <!-- Item 1 -->
+            <div class="item-card bg-white rounded-[2rem] p-4 card-shadow border border-slate-100">
+                <img src="https://images.unsplash.com/photo-1605462863863-10d9e47e15ee?auto=format&fit=crop&w=400&q=80" alt="Vintage Camera" class="w-full aspect-square object-cover rounded-[1.5rem] mb-5">
                 <div class="px-2">
-                    <h3 class="font-bold text-xl text-slate-800 mb-1 group-hover:text-indigo-600 transition-colors">Gaming Console</h3>
-                    <p class="text-slate-500 text-sm mb-6 line-clamp-2">Hardly used, 4K HDR support with two wireless controllers.</p>
-                    
+                    <h3 class="font-bold text-lg mb-1">Vintage Film Camera</h3>
+                    <p class="text-slate-400 text-xs mb-4 line-clamp-1">Collector's item, 1970s model, working condition.</p>
                     <div class="flex items-center justify-between pt-4 border-t border-slate-50">
-                        <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase">Current Price</p>
-                            <p class="text-xl font-extrabold text-slate-900">450 <span class="text-xs font-medium text-slate-400">USDC</span></p>
-                        </div>
-                        <button class="bg-slate-900 hover:bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold text-sm transition-all active-scale">Buy</button>
+                        <p class="text-xl font-black text-slate-900">120 <span class="text-xs font-medium text-slate-400 uppercase">USDC</span></p>
+                        <button class="bg-slate-900 text-white px-5 py-2 rounded-xl font-bold text-sm hover:bg-indigo-600">Buy</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Item Card 2 -->
-            <div class="group bg-white rounded-[2rem] p-4 card-shadow border border-slate-50 hover:border-indigo-100 transition-all">
-                <div class="aspect-square bg-slate-100 rounded-[1.5rem] mb-5 flex items-center justify-center text-slate-300 font-bold">PREVIEW</div>
+            <!-- Item 2 -->
+            <div class="item-card bg-white rounded-[2rem] p-4 card-shadow border border-slate-100">
+                <img src="https://images.unsplash.com/photo-1542491509-1c01e1feaf22?auto=format&fit=crop&w=400&q=80" alt="Watch" class="w-full aspect-square object-cover rounded-[1.5rem] mb-5">
                 <div class="px-2">
-                    <h3 class="font-bold text-xl text-slate-800 mb-1 group-hover:text-indigo-600 transition-colors">Mechanical Keyboard</h3>
-                    <p class="text-slate-500 text-sm mb-6 line-clamp-2">RGB Backlit, Brown Switches, perfect for coding.</p>
-                    
+                    <h3 class="font-bold text-lg mb-1">Luxury Men's Watch</h3>
+                    <p class="text-slate-400 text-xs mb-4 line-clamp-1">Minor scratches on strap, authentic glass.</p>
                     <div class="flex items-center justify-between pt-4 border-t border-slate-50">
-                        <div>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase">Current Price</p>
-                            <p class="text-xl font-extrabold text-slate-900">85 <span class="text-xs font-medium text-slate-400">USDC</span></p>
-                        </div>
-                        <button class="bg-slate-900 hover:bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold text-sm transition-all active-scale">Buy</button>
+                        <p class="text-xl font-black text-slate-900">45 <span class="text-xs font-medium text-slate-400 uppercase">USDC</span></p>
+                        <button class="bg-slate-900 text-white px-5 py-2 rounded-xl font-bold text-sm hover:bg-indigo-600">Buy</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Item Card 3 (Sold Out) -->
-            <div class="bg-slate-50/50 rounded-[2rem] p-4 border border-dashed border-slate-200">
-                <div class="aspect-square bg-slate-200 rounded-[1.5rem] mb-5 flex items-center justify-center relative">
-                    <span class="bg-white px-5 py-2 rounded-full font-black text-xs text-slate-400 shadow-sm uppercase tracking-tighter">Sold Out</span>
+            <!-- Item 3 -->
+            <div class="item-card bg-white rounded-[2rem] p-4 card-shadow border border-slate-100">
+                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=400&q=80" alt="Headphones" class="w-full aspect-square object-cover rounded-[1.5rem] mb-5">
+                <div class="px-2">
+                    <h3 class="font-bold text-lg mb-1">Wireless Headphones</h3>
+                    <p class="text-slate-400 text-xs mb-4 line-clamp-1">Noise cancelling, 1-year-old, white color.</p>
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-50">
+                        <p class="text-xl font-black text-slate-900">150 <span class="text-xs font-medium text-slate-400 uppercase">USDC</span></p>
+                        <button class="bg-slate-900 text-white px-5 py-2 rounded-xl font-bold text-sm hover:bg-indigo-600">Buy</button>
+                    </div>
                 </div>
-                <div class="px-2 opacity-50">
-                    <h3 class="font-bold text-xl text-slate-400 mb-1">Mirrorless Camera</h3>
-                    <p class="text-slate-400 text-sm mb-6">Sold via Arc Protocol.</p>
+            </div>
+
+            <!-- Item 4 (Sold Out Example) -->
+            <div class="bg-slate-50 rounded-[2rem] p-4 border border-dashed border-slate-200 opacity-60">
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=400&q=80" alt="Macbook" class="w-full aspect-square object-cover rounded-[1.5rem] mb-5 grayscale">
+                    <span class="absolute inset-0 flex items-center justify-center bg-white/40 font-black text-slate-600 text-sm tracking-widest">SOLD</span>
+                </div>
+                <div class="px-2">
+                    <h3 class="font-bold text-lg mb-1">MacBook Pro 2019</h3>
                     <div class="flex items-center justify-between pt-4">
-                        <p class="text-xl font-black text-slate-300 underline decoration-slate-200">299 USDC</p>
-                        <button disabled class="bg-slate-200 text-slate-400 px-6 py-3 rounded-xl font-bold text-sm cursor-not-allowed">Sold</button>
+                        <p class="text-xl font-black text-slate-300">700 USDC</p>
+                        <button disabled class="bg-slate-200 text-slate-400 px-5 py-2 rounded-xl font-bold text-sm cursor-not-allowed">Sold</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 5 -->
+            <div class="item-card bg-white rounded-[2rem] p-4 card-shadow border border-slate-100">
+                <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=400&q=80" alt="Books" class="w-full aspect-square object-cover rounded-[1.5rem] mb-5">
+                <div class="px-2">
+                    <h3 class="font-bold text-lg mb-1">Rare Book Collection</h3>
+                    <p class="text-slate-400 text-xs mb-4 line-clamp-1">Hardcover first editions, great condition.</p>
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-50">
+                        <p class="text-xl font-black text-slate-900">30 <span class="text-xs font-medium text-slate-400 uppercase">USDC</span></p>
+                        <button class="bg-slate-900 text-white px-5 py-2 rounded-xl font-bold text-sm hover:bg-indigo-600">Buy</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 6 -->
+            <div class="item-card bg-white rounded-[2rem] p-4 card-shadow border border-slate-100">
+                <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=400&q=80" alt="Leather Jacket" class="w-full aspect-square object-cover rounded-[1.5rem] mb-5">
+                <div class="px-2">
+                    <h3 class="font-bold text-lg mb-1">Leather Biker Jacket</h3>
+                    <p class="text-slate-400 text-xs mb-4 line-clamp-1">Size M, genuine leather, vintage style.</p>
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-50">
+                        <p class="text-xl font-black text-slate-900">80 <span class="text-xs font-medium text-slate-400 uppercase">USDC</span></p>
+                        <button class="bg-slate-900 text-white px-5 py-2 rounded-xl font-bold text-sm hover:bg-indigo-600">Buy</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 7 -->
+            <div class="item-card bg-white rounded-[2rem] p-4 card-shadow border border-slate-100">
+                <img src="https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=400&q=80" alt="Console" class="w-full aspect-square object-cover rounded-[1.5rem] mb-5">
+                <div class="px-2">
+                    <h3 class="font-bold text-lg mb-1">Gaming Monitor 27"</h3>
+                    <p class="text-slate-400 text-xs mb-4 line-clamp-1">144Hz refresh rate, no dead pixels.</p>
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-50">
+                        <p class="text-xl font-black text-slate-900">210 <span class="text-xs font-medium text-slate-400 uppercase">USDC</span></p>
+                        <button class="bg-slate-900 text-white px-5 py-2 rounded-xl font-bold text-sm hover:bg-indigo-600">Buy</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 8 -->
+            <div class="item-card bg-white rounded-[2rem] p-4 card-shadow border border-slate-100">
+                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=400&q=80" alt="Speaker" class="w-full aspect-square object-cover rounded-[1.5rem] mb-5">
+                <div class="px-2">
+                    <h3 class="font-bold text-lg mb-1">Bluetooth Speaker</h3>
+                    <p class="text-slate-400 text-xs mb-4 line-clamp-1">Waterproof, amazing bass, slightly used.</p>
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-50">
+                        <p class="text-xl font-black text-slate-900">55 <span class="text-xs font-medium text-slate-400 uppercase">USDC</span></p>
+                        <button class="bg-slate-900 text-white px-5 py-2 rounded-xl font-bold text-sm hover:bg-indigo-600">Buy</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 9 -->
+            <div class="item-card bg-white rounded-[2rem] p-4 card-shadow border border-slate-100">
+                <img src="https://images.unsplash.com/photo-1544724569-5f546fd6f2b5?auto=format&fit=crop&w=400&q=80" alt="Sneakers" class="w-full aspect-square object-cover rounded-[1.5rem] mb-5">
+                <div class="px-2">
+                    <h3 class="font-bold text-lg mb-1">Limited Sneakers</h3>
+                    <p class="text-slate-400 text-xs mb-4 line-clamp-1">Size 10, worn twice, like new.</p>
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-50">
+                        <p class="text-xl font-black text-slate-900">95 <span class="text-xs font-medium text-slate-400 uppercase">USDC</span></p>
+                        <button class="bg-slate-900 text-white px-5 py-2 rounded-xl font-bold text-sm hover:bg-indigo-600">Buy</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 10 -->
+            <div class="item-card bg-white rounded-[2rem] p-4 card-shadow border border-slate-100">
+                <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=400&q=80" alt="iPhone" class="w-full aspect-square object-cover rounded-[1.5rem] mb-5">
+                <div class="px-2">
+                    <h3 class="font-bold text-lg mb-1">iPhone 12 Mini</h3>
+                    <p class="text-slate-400 text-xs mb-4 line-clamp-1">64GB, Battery Health 85%, Blue color.</p>
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-50">
+                        <p class="text-xl font-black text-slate-900">320 <span class="text-xs font-medium text-slate-400 uppercase">USDC</span></p>
+                        <button class="bg-slate-900 text-white px-5 py-2 rounded-xl font-bold text-sm hover:bg-indigo-600">Buy</button>
                     </div>
                 </div>
             </div>
@@ -170,10 +185,8 @@
         </div>
     </main>
 
-    <footer class="mt-20 border-t border-slate-100 py-12 bg-white">
-        <div class="container mx-auto px-5 text-center">
-            <p class="text-slate-400 text-sm font-medium">© 2026 ArcRelay Protocol. All transactions are final on Arc Testnet.</p>
-        </div>
+    <footer class="mt-20 border-t border-slate-200 py-12 bg-white text-center">
+        <p class="text-slate-400 text-xs font-medium uppercase tracking-widest">© 2026 ArcRelay Protocol • Built on Arc Testnet</p>
     </footer>
 
 </body>
