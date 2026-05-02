@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arc Market - Buy & Sell Old Items</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md p-4 flex justify-between items-center sticky top-0 z-50">
+        <h1 class="text-2xl font-bold text-indigo-600">ArcMarket</h1>
+        <div class="space-x-4">
+            <button id="connectWallet" class="bg-indigo-600 text-white px-5 py-2 rounded-full font-semibold hover:bg-indigo-700">
+                Connect Wallet
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        
+        <!-- Section: List New Item -->
+        <section class="bg-white rounded-xl shadow-lg p-6 mb-10 max-w-2xl mx-auto">
+            <h2 class="text-xl font-bold mb-4 text-gray-800">Purana Saaman Bechein (Sell Item)</h2>
+            <div class="grid grid-cols-1 gap-4">
+                <input type="text" placeholder="Item ka naam (e.g. iPhone 12)" class="border p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                <textarea placeholder="Description likhein..." class="border p-3 rounded-lg w-full h-24 focus:outline-none focus:ring-2 focus:ring-indigo-400"></textarea>
+                <div class="flex gap-4">
+                    <input type="number" placeholder="Price in USDC" class="border p-3 rounded-lg flex-1 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                    <input type="text" placeholder="Image URL (IPFS)" class="border p-3 rounded-lg flex-1 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                </div>
+                <button class="bg-green-500 text-white py-3 rounded-lg font-bold hover:bg-green-600 transition">
+                    List on Arc Testnet
+                </button>
+            </div>
+        </section>
+
+        <hr class="mb-10 border-gray-300">
+
+        <!-- Section: Product Gallery -->
+        <h2 class="text-2xl font-bold mb-6 text-gray-800">Browse Recent Listings</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <!-- Example Card 1 -->
+            <div class="bg-white rounded-xl overflow-hidden shadow-md card-hover border border-gray-200">
+                <img src="https://via.placeholder.com/400x250" alt="Product" class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-bold">Gaming Laptop</h3>
+                        <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-2.5 py-0.5 rounded">NEW</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4 line-clamp-2">Bahut acchi condition mein hai, 16GB RAM aur RTX graphics card ke saath.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-xl font-extrabold text-gray-900">500 USDC</span>
+                        <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">Buy Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Example Card 2 -->
+            <div class="bg-white rounded-xl overflow-hidden shadow-md card-hover border border-gray-200">
+                <img src="https://via.placeholder.com/400x250" alt="Product" class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h3 class="text-lg font-bold mb-2">Mountain Bike</h3>
+                    <p class="text-gray-600 text-sm mb-4 line-clamp-2">2 saal purani, bilkul naye tyres aur gear system ke saath.</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-xl font-extrabold text-gray-900">120 USDC</span>
+                        <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">Buy Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Example Card 3 -->
+            <div class="bg-white rounded-xl overflow-hidden shadow-md card-hover border border-gray-200 opacity-75">
+                <div class="relative">
+                    <img src="https://via.placeholder.com/400x250" alt="Product" class="w-full h-48 object-cover grayscale">
+                    <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <span class="text-white font-bold text-xl uppercase tracking-widest">Sold Out</span>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="text-lg font-bold mb-2 text-gray-400">DSLR Camera</h3>
+                    <div class="flex justify-between items-center">
+                        <span class="text-xl font-extrabold text-gray-400">350 USDC</span>
+                        <button disabled class="bg-gray-400 text-white px-4 py-2 rounded-lg cursor-not-allowed">Sold</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="text-center py-10 text-gray-500 text-sm">
+        Built on Arc Testnet • Secured by USDC
+    </footer>
+
+</body>
+</html>
